@@ -31,14 +31,18 @@ let commentField = document.querySelector("#comments");
 
 const submitBookButton = document.querySelector("#submit-book");
 submitBookButton.addEventListener("click", function (e) {
-  //https://codepen.io/realdevgarg/pen/NWRrKvd
+  e.preventDefault();
   validate();
-  addBook();
+  //https://codepen.io/realdevgarg/pen/NWRrKvd
+  if (validate() == true) {
+    addBook();
+    renderTable(bookCollection);
+    bookModal.hide();
+  }
   //let bookNum = addBook();
   //let ratingNum = addRating(bookNum);
   //addTableRow(bookNum, ratingNum);
-  renderTable(bookCollection);
-  bookModal.hide();
+
 });
 
 //add new rating
@@ -58,22 +62,47 @@ function clearBookModal() {
   readerField.value = "";
   raterField.value = "none";
   commentField.value = "";
+  
+  titleField.parentElement.classList.remove('error');
+  authorField.parentElement.classList.remove('error');
+  genreField.parentElement.classList.remove('error');
+  readerField.parentElement.classList.remove('error');
+  raterField.parentElement.classList.remove('error');
+
+  // let smallErrors = document.querySelectorAll('small');
+  // smallErrors.forEach((error) => error.style.visibility = "hidden");
 }
+
 
 function setErrorFor(input, message) {
   let formControl = input.parentElement;
-  formControl.className = "form-control error";
+  formControl.className = "mb-2 error";
   let small = formControl.querySelector("small");
-  small.innerText = message;
+  small.innerHTML = message;
 }
 
 function validate() {
-  //  Checking for username
-  if (titleField.value === "") {
-    setErrorFor(titleField, "We need to know the title!");
+  if (readerField.value.trim() === "" ||
+      titleField.value.trim() === "" ||
+      authorField.value.trim() === "" ||
+      genreField.value === "none" ||
+      raterField.value === "none") {
+        if (readerField.value.trim() === "") {
+          setErrorFor(readerField, "We wanna know who you are");
+        }
+        if (titleField.value.trim() === "") {
+          setErrorFor(titleField, "Title can't be blank");
+        }
+        if (authorField.value.trim() === "") {
+          setErrorFor(authorField, "Give the writer some credit here");
+        }
+        if (genreField.value === "none") {
+          setErrorFor(genreField, "Genres are hard, but give it your best shot");
+        }
+        if (raterField.value === "none") {
+          setErrorFor(raterField, "Go with your gut");
+      }
+      return false;
   }
-  if (authorField.value === "") {
-    setErrorFor(authorField, "We need to know the author!");
-  }
+  else return true;
 }
- 
